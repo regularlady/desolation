@@ -13,14 +13,14 @@ Additionally, agents will have a fixed time limit each turn to search for the be
 
 ## Instructions
 
-I am implementing the following functions:
+I implemented the following functions:
 
 - [x] `MinimaxPlayer.minimax()`: implement minimax search
 - [x] `AlphaBetaPlayer.alphabeta()`: implement minimax search with alpha-beta pruning
 - [x] `AlphaBetaPlayer.get_move()`: implement iterative deepening search
-- `custom_score()`: implement your own best position evaluation heuristic
-- `custom_score_2()`: implement your own alternate position evaluation heuristic
-- `custom_score_3()`: implement your own alternate position evaluation heuristic
+- [x] `custom_score()`: implement your own best position evaluation heuristic
+- [x] `custom_score_2()`: implement your own alternate position evaluation heuristic
+- [x] `custom_score_3()`: implement your own alternate position evaluation heuristic
 
 You may write or modify code within each file (but you must maintain compatibility with the function signatures provided).  You may add other classes, functions, etc., as needed, but it is not required.
 

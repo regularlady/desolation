@@ -34,9 +34,9 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
 
+    my_own_moves = len(game.get_legal_moves(player))
+    return float(my_own_moves)
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -60,9 +60,10 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
 
+    my_own_moves = len(game.get_legal_moves(player))
+    my_opponent_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float(my_own_moves - my_opponent_moves * 2)
 
 def custom_score_3(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -86,9 +87,10 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
 
+    my_own_moves = len(game.get_legal_moves(player))
+    my_opponent_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float(my_own_moves - (my_opponent_moves * .5))
 
 class IsolationPlayer:
     """Base class for minimax and alphabeta agents -- this class is never
