@@ -200,9 +200,6 @@ class MinimaxPlayer(IsolationPlayer):
             else:
                 return not bool(game.get_legal_moves())
 
-            # return (not bool(game.get_legal_moves())) or (depth <= 0)
-
-
         def min_value(game, depth):
             """ Return the value for a win (+1) if the game is over,
             otherwise return the minimum value over all legal child
@@ -272,27 +269,22 @@ class AlphaBetaPlayer(IsolationPlayer):
     def get_move(self, game, time_left):
         """Search for the best move from the available legal moves and return a
         result before the time limit expires.
-
         Modify the get_move() method from the MinimaxPlayer class to implement
         iterative deepening search instead of fixed-depth search.
-
         **********************************************************************
         NOTE: If time_left() < 0 when this function returns, the agent will
               forfeit the game due to timeout. You must return _before_ the
               timer reaches 0.
         **********************************************************************
-
         Parameters
         ----------
         game : `isolation.Board`
             An instance of `isolation.Board` encoding the current state of the
             game (e.g., player locations and blocked cells).
-
         time_left : callable
             A function that returns the number of milliseconds left in the
             current turn. Returning with any less than 0 ms remaining forfeits
             the game.
-
         Returns
         -------
         (int, int)
@@ -301,56 +293,117 @@ class AlphaBetaPlayer(IsolationPlayer):
         """
         self.time_left = time_left
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        # Initialize the best move so that this function returns something
+        # in case the search fails due to timeout
+        best_move = (-1, -1)
+
+        try:
+            # The try/except block will automatically catch the exception
+            # raised when the timer is about to expire.
+            depth = 1
+
+            while 1:
+                best_move = self.alphabeta(game, depth)
+                depth += 1
+            return best_move
+
+        except SearchTimeout:
+            pass  # Handle any actions required after timeout as needed
+
+        # Return the best move from the last completed search iteration
+        return best_move
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         """Implement depth-limited minimax search with alpha-beta pruning as
         described in the lectures.
-
         This should be a modified version of ALPHA-BETA-SEARCH in the AIMA text
         https://github.com/aimacode/aima-pseudocode/blob/master/md/Alpha-Beta-Search.md
-
-        **********************************************************************
-            You MAY add additional methods to this class, or define helper
-                 functions to implement the required functionality.
-        **********************************************************************
 
         Parameters
         ----------
         game : isolation.Board
             An instance of the Isolation game `Board` class representing the
             current game state
-
         depth : int
             Depth is an integer representing the maximum number of plies to
             search in the game tree before aborting
-
         alpha : float
             Alpha limits the lower bound of search on minimizing layers
-
         beta : float
             Beta limits the upper bound of search on maximizing layers
-
         Returns
         -------
         (int, int)
             The board coordinates of the best move found in the current search;
             (-1, -1) if there are no legal moves
-
-        Notes
-        -----
-            (1) You MUST use the `self.score()` method for board evaluation
-                to pass the project tests; you cannot call any other evaluation
-                function directly.
-
-            (2) If you use any helper functions (e.g., as shown in the AIMA
-                pseudocode) then you must copy the timer check into the top of
-                each helper function or else your agent will timeout during
-                testing.
         """
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        def terminal_test(game, depth):
+            """ Return True if the game is over for the active player
+            and False otherwise.
+            """
+            if self.time_left() < self.TIMER_THRESHOLD:
+                raise SearchTimeout()
+            elif depth <= 0:
+                return True
+            else:
+                return not bool(game.get_legal_moves())
+
+        def min_value(game, depth, alpha, beta):
+            """ Return the value for a win (+1) if the game is over,
+            otherwise return the minimum value over all legal child
+            nodes.
+            """
+            # set unbounded upper value for comparison
+            v = float("inf")
+
+            if terminal_test(game, depth):
+                return self.score(game, self)
+
+            for move in game.get_legal_moves():
+                v = min(v, max_value(game.forecast_move(move), depth - 1, alpha, beta))
+                if v <= alpha:
+                    return v
+                beta = min(beta, v)
+            return v
+
+        def max_value(game, depth, alpha, beta):
+            """ Return the value for a loss (-1) if the game is over,
+            otherwise return the maximum value over all legal child
+            nodes.
+            """
+            # set unbounded upper value for comparison
+            v = float("-inf")
+
+            if terminal_test(game, depth):
+                return self.score(game, self)
+            for move in game.get_legal_moves():
+                v = max(v, min_value(game.forecast_move(move), depth - 1, alpha, beta))
+                if v >= beta:
+                    return v
+                alpha = max(alpha, v)
+            return v
+
+        """ Return the move along a branch of the game tree that
+        has the best possible value.  A move is a pair of coordinates
+        in (column, row) order corresponding to a legal move for
+        the searching player.
+        ignore the special case of calling this function
+        from a terminal state.
+        """
+
+        v = float("-inf")
+
+        best_move, best_score = (-1,-1), v
+
+        if not bool(game.get_legal_moves()):
+            return best_move
+        for move in game.get_legal_moves():
+            v = min_value(game.forecast_move(move), depth-1, alpha, beta)
+            alpha = max(alpha, v)
+            # track best move and score
+            if v > best_score:
+                best_move, best_score = move, v
+        return best_move

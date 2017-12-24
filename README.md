@@ -16,8 +16,8 @@ Additionally, agents will have a fixed time limit each turn to search for the be
 I am implementing the following functions:
 
 - [x] `MinimaxPlayer.minimax()`: implement minimax search
-- `AlphaBetaPlayer.alphabeta()`: implement minimax search with alpha-beta pruning
-- `AlphaBetaPlayer.get_move()`: implement iterative deepening search
+- [x] `AlphaBetaPlayer.alphabeta()`: implement minimax search with alpha-beta pruning
+- [x] `AlphaBetaPlayer.get_move()`: implement iterative deepening search
 - `custom_score()`: implement your own best position evaluation heuristic
 - `custom_score_2()`: implement your own alternate position evaluation heuristic
 - `custom_score_3()`: implement your own alternate position evaluation heuristic
