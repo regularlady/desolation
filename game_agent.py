@@ -1,10 +1,3 @@
-"""Finish all TODO items in this file to complete the isolation project, then
-test your agent's strength against a set of known agents using tournament.py
-and include the results in your report.
-"""
-import random
-
-
 class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
     pass
@@ -36,7 +29,13 @@ def custom_score(game, player):
     """
 
     my_own_moves = len(game.get_legal_moves(player))
-    return float(my_own_moves)
+    my_opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+
+    w, h = game.width / 2., game.height / 2.
+    y, x = game.get_player_location(player)
+
+    return float(my_own_moves ** 1.5 - 2.5 * my_opp_moves - 0.1 * float((h - y) ** 2 + (w - x) ** 2))
+
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -65,6 +64,7 @@ def custom_score_2(game, player):
     my_opponent_moves = len(game.get_legal_moves(game.get_opponent(player)))
     return float(my_own_moves - my_opponent_moves * 2)
 
+
 def custom_score_3(game, player):
     """Calculate the heuristic value of a game state from the point of view
     of the given player.
@@ -91,6 +91,7 @@ def custom_score_3(game, player):
     my_own_moves = len(game.get_legal_moves(player))
     my_opponent_moves = len(game.get_legal_moves(game.get_opponent(player)))
     return float(my_own_moves - (my_opponent_moves * .5))
+
 
 class IsolationPlayer:
     """Base class for minimax and alphabeta agents -- this class is never
@@ -119,6 +120,7 @@ class IsolationPlayer:
         self.score = score_fn
         self.time_left = None
         self.TIMER_THRESHOLD = timeout
+
 
 class MinimaxPlayer(IsolationPlayer):
     """Game-playing agent that chooses a move using depth-limited minimax
@@ -219,7 +221,6 @@ class MinimaxPlayer(IsolationPlayer):
                 # find the minimum value over all legal child nodes
                 v = min(v, max_value(game.forecast_move(move), depth - 1))
             return v
-
 
         def max_value(game, depth):
             """ Return the value for a loss (-1) if the game is over,
